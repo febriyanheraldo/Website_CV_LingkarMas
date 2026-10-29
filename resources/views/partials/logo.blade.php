@@ -1,23 +1,30 @@
 @php
     $dark = $dark ?? false;
-    $white = public_path('images/logo-putih.png');
-    $normal = public_path('images/logo/logo_lingkarmas.png');
+    $showText = $showText ?? true;
+    $name = $text ?? 'CV. Lingkar Mas';
+    $uploaded = \App\Models\Setting::get('logo');
+    $src = null;
+    $chip = false;
 
-    if ($dark && file_exists($white)) {
-        $src = 'images/logo-putih.png';
-        $chip = false;
-    } elseif (file_exists($normal)) {
-        $src = 'images/logo/logo_lingkarmas.png';
+    if ($uploaded && \Illuminate\Support\Facades\Storage::disk('public')->exists($uploaded)) {
+        $src = 'storage/' . $uploaded;
         $chip = $dark;
-    } else {
-        $src = null;
+    } elseif ($dark && file_exists(public_path('images/logo-putih.png'))) {
+        $src = 'images/logo-putih.png';
+    } elseif (file_exists(public_path('images/logo.png'))) {
+        $src = 'images/logo.png';
+        $chip = $dark;
     }
 @endphp
 
 <a class="logo" href="{{ route('home') }}">
     @if ($src)
-        <img class="logo-img {{ $chip ? 'chip' : '' }}" src="{{ asset($src) }}" alt="{{ $text ?? 'CV. Lingkar Mas' }}">
+        <img class="logo-img {{ $chip ? 'chip' : '' }}" src="{{ asset($src) }}" alt="{{ $showText ? '' : $name }}">
     @else
-        <i>⚙</i>{{ $text ?? 'CV. Lingkar Mas' }}
+        <i>⚙</i>
+    @endif
+
+    @if ($showText || ! $src)
+        <span class="logo-text">{{ $name }}</span>
     @endif
 </a>

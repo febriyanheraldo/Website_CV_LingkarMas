@@ -2,7 +2,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<h1>Dashboard Admin</h1>
+<h1>Dashboard</h1>
 <p class="mu">Ringkasan pesanan, klien, dan stok.</p>
 
 <div class="stats">
@@ -17,15 +17,17 @@
         <div class="tw">
             <table>
                 <tr><th>Kode</th><th>Klien</th><th>Produk</th><th>Total</th><th>Status</th></tr>
-                @foreach ($recent as $o)
+                @forelse ($recent as $o)
                     <tr>
-                        <td><a href="{{ route('admin.orders.show', $o['id']) }}">{{ \App\Support\DummyData::kode($o['id']) }}</a></td>
-                        <td>{{ $o['klien'] }}</td>
-                        <td>{{ $o['produk'] }}</td>
-                        <td>{{ \App\Support\DummyData::rp($o['total']) }}</td>
-                        <td><span class="st {{ $o['status'] }}">{{ $o['status'] }}</span></td>
+                        <td><a href="{{ route('admin.orders.show', $o) }}">{{ $o->kode }}</a></td>
+                        <td>{{ $o->user?->nama ?? 'Akun dihapus' }}</td>
+                        <td>{{ $o->produk_nama }}</td>
+                        <td>{{ $o->total_rp }}</td>
+                        <td><span class="st {{ $o->status->value }}">{{ $o->status->value }}</span></td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr><td colspan="5">Belum ada pesanan.</td></tr>
+                @endforelse
             </table>
         </div>
     </div>
@@ -33,7 +35,7 @@
         <h3>Stok menipis</h3>
         <ul>
             @forelse ($low as $p)
-                <li>{{ $p['nama'] }} <b>{{ $p['stok'] }} unit</b></li>
+                <li><a href="{{ route('admin.products.show', $p) }}">{{ $p->nama }}</a> <b>{{ $p->stok }} unit</b></li>
             @empty
                 <li>Semua stok aman.</li>
             @endforelse

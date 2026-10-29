@@ -3,7 +3,9 @@
         <div class="ftg">
             <div>
                 @include('partials.logo', ['dark' => true])
-                <p>Jl. Raya Waru No. 123, Waru, Sidoarjo, Jawa Timur 61256<br>Telp: +62 812-3029-298<br>Email: info@lingkarmas.co.id</p>
+                <p>Jl. Raya Waru No. 123, Waru, Sidoarjo, Jawa Timur 61256<br>
+                Telp: {{ \App\Models\Setting::get('telepon', '-') }}<br>
+                Email: {{ \App\Models\Setting::get('email', '-') }}</p>
             </div>
             <div>
                 <h4>Tautan Cepat</h4>

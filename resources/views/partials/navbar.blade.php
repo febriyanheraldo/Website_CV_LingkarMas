@@ -8,7 +8,15 @@
             <a href="#kontak">Kontak</a>
         </div>
         <div class="navbtn">
-            <a class="btn line sm" href="{{ route('login') }}">Login</a>
+            @auth
+                <a class="btn line sm" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <form class="inline" method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="btn line sm" type="submit">Keluar</button>
+                </form>
+            @else
+                <a class="btn line sm" href="{{ route('login') }}">Login</a>
+            @endauth
             <a class="btn sm" href="{{ route('home') }}#unduh">Unduh Aplikasi Android</a>
         </div>
     </div>

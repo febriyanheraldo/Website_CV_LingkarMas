@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Support\DummyData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SiteController extends Controller
 {
     public function home()
     {
-        return view('home', ['products' => DummyData::products()]);
+        return view('home', ['products' => \App\Models\Product::orderBy('id')->take(8)->get()]);
     }
 
     public function loginForm()
@@ -19,7 +20,7 @@ class SiteController extends Controller
 
     public function login(Request $request)
     {
-        $data = $request->validate([
+        $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ], [
@@ -28,18 +29,32 @@ class SiteController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        // Hanya untuk demo frontend; tahap berikutnya memakai Auth + role admin.
-        if ($data['email'] === 'admin@lingkarmas.com' && $data['password'] === 'Admin#12345') {
-            session(['demo_admin' => true]);
-            return redirect()->route('admin.dashboard');
+        if (! Auth::attempt($credentials)) {
+            return back()->withErrors(['email' => 'Email atau password salah.'])
+                ->withInput($request->only('email'));
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
+        // hanya role admin yang boleh masuk panel web
+        if (! Auth::user()->isAdmin()) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return back()->withErrors(['email' => 'Akun ini bukan admin. Silakan gunakan aplikasi mobile.'])
+                ->withInput($request->only('email'));
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('admin.dashboard'));
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        session()->forget('demo_admin');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('home');
     }
 }

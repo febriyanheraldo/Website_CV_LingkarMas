@@ -2,6 +2,7 @@
 @section('title', 'Produk')
 
 @section('content')
+@include('partials.back', ['url' => route('admin.dashboard'), 'label' => 'Kembali ke dashboard'])
 <h1>Produk</h1>
 <p class="mu">Kelola katalog yang tampil di aplikasi mobile.</p>
 
@@ -9,7 +10,7 @@
     <input name="q" value="{{ $q }}" placeholder="Cari produk" aria-label="Cari produk">
     <select name="kategori" aria-label="Kategori" onchange="this.form.submit()">
         <option value="">Semua kategori</option>
-        @foreach (['Pompa & Blower', 'Komponen Mesin'] as $k)
+        @foreach ($kategoris as $k)
             <option value="{{ $k }}" @selected($kat === $k)>{{ $k }}</option>
         @endforeach
     </select>
@@ -25,20 +26,20 @@
                 <tr>
                     <td>
                         <span class="mini">
-                            @if (file_exists(public_path($p['foto'])))
-                                <img src="{{ asset($p['foto']) }}" alt="">
-                            @else
-                                {{ $p['ikon'] }}
-                            @endif
+                            @if ($p->foto_url) <img src="{{ $p->foto_url }}" alt=""> @else {{ $p->ikon }} @endif
                         </span>
-                        {{ $p['nama'] }}
+                        <a href="{{ route('admin.products.show', $p) }}">{{ $p->nama }}</a>
                     </td>
-                    <td>{{ $p['kategori'] }}</td>
-                    <td>{{ \App\Support\DummyData::rp($p['harga']) }}</td>
-                    <td>{{ $p['stok'] }}</td>
-                    <td>
-                        <a class="btn sm line" href="{{ route('admin.products.create') }}">Ubah</a>
-                        <button class="btn sm line" data-demo="Hapus produk {{ $p['nama'] }}?">Hapus</button>
+                    <td>{{ $p->kategori }}</td>
+                    <td>{{ $p->harga_rp }}</td>
+                    <td>{{ $p->stok }}</td>
+                    <td class="row">
+                        <a class="btn sm" href="{{ route('admin.products.show', $p) }}">Detail</a>
+                        <a class="btn sm line" href="{{ route('admin.products.edit', $p) }}">Ubah</a>
+                        <form class="inline" method="POST" action="{{ route('admin.products.destroy', $p) }}" onsubmit="return confirm('Hapus produk ini? Riwayat pesanan tetap tersimpan.')">
+                            @csrf @method('DELETE')
+                            <button class="btn sm line" type="submit">Hapus</button>
+                        </form>
                     </td>
                 </tr>
             @empty
@@ -46,6 +47,6 @@
             @endforelse
         </table>
     </div>
-    <div class="pg"><span class="on">1</span><span>2</span><span>›</span></div>
+    {{ $items->links('partials.pagination') }}
 </div>
 @endsection

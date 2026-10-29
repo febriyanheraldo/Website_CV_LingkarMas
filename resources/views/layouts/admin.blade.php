@@ -12,11 +12,12 @@
 <div class="adm">
 
     <aside class="side">
-        @include('partials.logo', ['dark' => true, 'text' => 'Lingkar Mas'])
+        @include('partials.logo', ['dark' => true, 'text' => 'CV. Lingkar Mas'])
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'on' : '' }}">Dashboard</a>
         <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'on' : '' }}">Produk</a>
         <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'on' : '' }}">Pesanan</a>
         <a href="{{ route('admin.clients') }}" class="{{ request()->routeIs('admin.clients*') ? 'on' : '' }}">Klien</a>
+        <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'on' : '' }}">Pengaturan</a>
 
         <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Yakin ingin keluar?')">
             @csrf
@@ -25,9 +26,12 @@
                 Keluar
             </button>
         </form>
+
+        <div class="side-user">{{ auth()->user()->nama }}<br><small>{{ auth()->user()->role }}</small></div>
     </aside>
 
     <main class="main">
+        @include('partials.flash')
         @yield('content')
     </main>
 

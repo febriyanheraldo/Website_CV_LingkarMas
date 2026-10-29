@@ -9,12 +9,32 @@
             <p>Distributor pompa, roots blower, bearing, dan oil seal industri di Sidoarjo. Melayani kebutuhan pabrik, kontraktor, dan retail.</p>
             <div class="row">
                 <a class="btn" href="#katalog">Lihat Katalog</a>
-                <a class="btn wa" href="#kontak">Chat WA</a>
+                <a class="btn wa" href="https://wa.me/{{ \App\Models\Setting::waNumber() }}" target="_blank" rel="noopener">Chat Sales WA</a>
             </div>
         </div>
-        <div class="art">
-            <img src="{{ asset('images/produk/pump.jpg') }}" alt="Pompa dan blower industri CV. Lingkar Mas">
-            <div class="rate"><b>Rating 4,6 ★</b><span>Ulasan Google Maps</span></div>
+        @php
+            $slides = $products->filter(fn ($p) => $p->foto_url)->values();
+        @endphp
+
+        <div class="art slider" id="heroSlider" aria-roledescription="carousel" aria-label="Foto produk unggulan">
+            @forelse ($slides as $i => $p)
+                <figure class="slide {{ $i === 0 ? 'on' : '' }}">
+                    <img src="{{ $p->foto_url }}" alt="{{ $p->nama }}" @if ($i > 0) loading="lazy" @endif>
+                    <figcaption>{{ $p->nama }}</figcaption>
+                </figure>
+            @empty
+                <figure class="slide on">
+                    <img src="{{ asset('images/produk/pump.jpg') }}" alt="Pompa dan blower industri CV. Lingkar Mas">
+                </figure>
+            @endforelse
+
+            @if ($slides->count() > 1)
+                <div class="dots">
+                    @foreach ($slides as $i => $p)
+                        <button type="button" class="{{ $i === 0 ? 'on' : '' }}" aria-label="Tampilkan {{ $p->nama }}"></button>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 </header>
@@ -39,16 +59,16 @@
             @foreach ($products as $p)
                 <div class="card prod">
                     <div class="thumb">
-                        @if (file_exists(public_path($p['foto'])))
-                            <img src="{{ asset($p['foto']) }}" alt="{{ $p['nama'] }}" loading="lazy">
+                        @if ($p->foto_url)
+                            <img src="{{ $p->foto_url }}" alt="{{ $p->nama }}" loading="lazy">
                         @else
-                            {{ $p['ikon'] }}
+                            {{ $p->ikon }}
                         @endif
                     </div>
-                    <span class="cat">{{ $p['kategori'] }}</span>
-                    <h3>{{ $p['nama'] }}</h3>
-                    <p>{{ $p['ringkas'] }}</p>
-                    <div class="pr">{{ \App\Support\DummyData::rp($p['harga']) }}</div>
+                    <span class="cat">{{ $p->kategori }}</span>
+                    <h3>{{ $p->nama }}</h3>
+                    <p>{{ $p->ringkas }}</p>
+                    <div class="pr">{{ $p->harga_rp }}</div>
                 </div>
             @endforeach
         </div>
@@ -73,4 +93,37 @@
         </div>
     </div>
 </section>
+
+<script>
+(function () {
+    var root = document.getElementById('heroSlider');
+    if (!root) return;
+
+    var slides = root.querySelectorAll('.slide');
+    var dots = root.querySelectorAll('.dots button');
+    if (slides.length < 2) return;
+
+    var i = 0, timer = null;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function show(n) {
+        slides[i].classList.remove('on');
+        if (dots[i]) dots[i].classList.remove('on');
+        i = (n + slides.length) % slides.length;
+        slides[i].classList.add('on');
+        if (dots[i]) dots[i].classList.add('on');
+    }
+
+    function start() { if (!reduce) timer = setInterval(function () { show(i + 1); }, 4000); }
+    function stop() { clearInterval(timer); }
+
+    dots.forEach(function (d, n) {
+        d.addEventListener('click', function () { stop(); show(n); start(); });
+    });
+
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    start();
+})();
+</script>
 @endsection

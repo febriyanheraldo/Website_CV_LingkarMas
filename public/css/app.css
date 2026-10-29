@@ -99,3 +99,37 @@ th{text-align:left;color:var(--mu);font-weight:600;padding:8px;border-bottom:1px
 .phone-real{width:200px;height:auto;aspect-ratio:9/19;border:8px solid #1d1d1f;border-radius:30px;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.45)}
 .phone-real img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 .phone-real::before{content:"";position:absolute;top:8px;left:50%;width:56px;height:6px;margin-left:-28px;border-radius:99px;background:#1d1d1f;z-index:2}
+
+.head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.pd{display:grid;grid-template-columns:320px 1fr;gap:14px;margin-bottom:0}
+.pd .photo{padding:0;overflow:hidden;aspect-ratio:4/3;display:grid;place-items:center;align-self:start}
+.pd .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.pd .ph{font-size:64px}
+.low-badge{display:inline-block;margin-top:4px;padding:2px 10px;border-radius:99px;background:#fee2e2;color:#991b1b;font-size:12px;font-weight:600}
+@media(max-width:820px){.pd{grid-template-columns:1fr}}
+
+.side-user{margin-top:10px;padding:10px 12px;border-top:1px solid #234363;font-size:13px;color:#fff}
+.side-user small{color:#9fb4c9;text-transform:capitalize}
+
+/* pagination */
+.pg a{padding:5px 11px;border:1px solid var(--bd);border-radius:6px;background:#fff;font-size:13px}
+.pg a:hover{border-color:var(--or);color:var(--or2)}
+
+/* form inline (tombol hapus, ubah status) */
+form.inline{display:inline;margin:0}
+td.row{align-items:center}
+
+/* pratinjau logo / foto */
+.logo-prev{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+.logo-prev img{height:64px;width:auto;max-width:160px;object-fit:contain;border:1px solid var(--bd);border-radius:8px;padding:6px;background:#fff}
+
+/* slideshow hero */
+.slider{position:relative;overflow:hidden;border-radius:18px;background:#0f2a45}
+.slider .slide{position:absolute;inset:0;margin:0;opacity:0;transition:opacity .8s ease}
+.slider .slide.on{opacity:1}
+.slider .slide img{width:100%;height:100%;object-fit:cover;display:block;border-radius:0}
+.slider figcaption{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;color:#fff;font:600 15px 'Outfit','Inter',sans-serif;background:linear-gradient(transparent,rgba(5,15,28,.8))}
+.slider .dots{position:absolute;right:14px;bottom:14px;display:flex;gap:6px;z-index:2}
+.slider .dots button{width:9px;height:9px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.5);cursor:pointer}
+.slider .dots button.on{background:var(--or);width:22px}
+@media(prefers-reduced-motion:reduce){.slider .slide{transition:none}}
