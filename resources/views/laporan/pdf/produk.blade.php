@@ -27,8 +27,8 @@
         .ringkas { width: 50%; margin-top: 14px; }
         .ringkas td { border: 0; padding: 3px 0; }
 
-        .ttd { width: 100%; margin-top: 28px; }
-        .ttd td { border: 0; width: 50%; vertical-align: top; }
+        .ttd { width: 100%; margin-top: 28px; page-break-inside: avoid; }
+        .ttd td { border: 0; padding: 0; text-align: center; }
     </style>
 </head>
 <body>
@@ -99,14 +99,25 @@
         <tr><td>Produk stok menipis</td><td>: {{ $products->where('stok', '<=', 5)->count() }}</td></tr>
     </table>
 
-    <table class="ttd">
+    <table class="ttd" cellspacing="0" cellpadding="0">
+        <tr>
+            <td style="width:58%"></td>
+            <td align="center" style="width:42%; padding-bottom:4px;">
+                Sidoarjo, {{ now()->format('d/m/Y') }}<br>
+                {{ $ttdJabatan ?: 'Dicetak oleh,' }}
+            </td>
+        </tr>
         <tr>
             <td></td>
-            <td class="c">
-                Sidoarjo, {{ now()->format('d/m/Y') }}<br>
-                Dicetak oleh,<br><br><br><br>
-                <b>{{ $pencetak }}</b>
+            <td align="center" valign="middle" style="height:74px;">
+                @if ($ttdGambar)
+                    <img src="{{ $ttdGambar }}" alt="Tanda tangan" height="64">
+                @endif
             </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center"><b><u>{{ $ttdNama ?: $pencetak }}</u></b></td>
         </tr>
     </table>
 
