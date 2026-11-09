@@ -5,6 +5,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
@@ -36,4 +37,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     Route::get('/pengaturan', [SettingController::class, 'edit'])->name('settings');
     Route::put('/pengaturan', [SettingController::class, 'update'])->name('settings.update');
+
+    Route::get('/laporan/produk/pdf', [LaporanController::class, 'exportPdfProduk'])->name('laporan.produk.pdf');
 });

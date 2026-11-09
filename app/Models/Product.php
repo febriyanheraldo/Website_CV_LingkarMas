@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    protected $fillable = ['nama', 'kategori', 'spesifikasi', 'harga', 'stok', 'foto'];
+    protected $fillable = ['nama', 'kategori', 'spesifikasi', 'harga', 'stok', 'foto', 'video'];
 
     protected $casts = ['harga' => 'integer', 'stok' => 'integer'];
 
@@ -21,17 +21,20 @@ class Product extends Model
     /** URL absolut foto (dipakai web & API). Null jika tidak ada atau file hilang. */
     public function getFotoUrlAttribute(): ?string
     {
-        if (! $this->foto) {
+        if (! $this->foto || ! file_exists(public_path($this->foto))) {
             return null;
         }
 
-        if (str_starts_with($this->foto, 'images/')) {   // foto bawaan di public/images
-            return file_exists(public_path($this->foto)) ? asset($this->foto) : null;
+        return asset($this->foto);
+    }
+
+    public function getVideoUrlAttribute(): ?string
+    {
+        if (! $this->video || ! file_exists(public_path($this->video))) {
+            return null;
         }
 
-        return Storage::disk('public')->exists($this->foto)
-            ? url(Storage::url($this->foto))
-            : null;
+        return asset($this->video);
     }
 
     public function getIkonAttribute(): string

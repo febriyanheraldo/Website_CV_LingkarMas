@@ -15,6 +15,10 @@
         @endforeach
     </select>
     <button class="btn sm" type="submit">Cari</button>
+    <a class="btn sm pdf" target="_blank" rel="noopener"
+    href="{{ route('admin.laporan.produk.pdf', request()->only(['q', 'kategori'])) }}">Cetak PDF</a>
+    <a class="btn sm pdf"
+    href="{{ route('admin.laporan.produk.pdf', request()->only(['q', 'kategori']) + ['unduh' => 1]) }}">Unduh PDF</a>
     <a class="btn sm" href="{{ route('admin.products.create') }}">Tambah produk</a>
 </form>
 
@@ -26,7 +30,11 @@
                 <tr>
                     <td>
                         <span class="mini">
-                            @if ($p->foto_url) <img src="{{ $p->foto_url }}" alt=""> @else {{ $p->ikon }} @endif
+                            @if ($p->foto_url)
+                                <img src="{{ $p->foto_url }}" alt="{{ $p->nama }}">
+                            @else
+                                {{ $p->ikon }}
+                            @endif
                         </span>
                         <a href="{{ route('admin.products.show', $p) }}">{{ $p->nama }}</a>
                     </td>

@@ -27,6 +27,7 @@
         @endif
     </div>
 
+
     <div>
         <div class="stats" style="grid-template-columns:1fr 1fr">
             <div class="stat"><span>Harga</span><b style="font-size:22px">{{ $product->harga_rp }}</b></div>
@@ -49,6 +50,13 @@
         </div>
     </div>
 </div>
+
+    @if ($product->video_url)
+        <div class="panel">
+            <h3>Video produk</h3>
+            <video class="pvideo" src="{{ $product->video_url }}" controls preload="metadata"></video>
+        </div>a
+    @endif
 
 <div class="panel">
     <h3>Pesanan produk ini</h3>

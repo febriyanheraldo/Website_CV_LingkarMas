@@ -15,11 +15,11 @@
         <div class="fgrid">
             <div>
                 <label for="nama">Nama produk</label>
-                <input id="nama" name="nama" value="{{ old('nama', $product->nama) }}" placeholder="Industrial Pump">
+                <input id="nama" name="nama" value="{{ old('nama', $product->nama) }}" placeholder="">
             </div>
             <div>
                 <label for="kategori">Kategori</label>
-                <input id="kategori" name="kategori" list="kategori-list" value="{{ old('kategori', $product->kategori) }}" placeholder="Pompa &amp; Blower">
+                <input id="kategori" name="kategori" list="kategori-list" value="{{ old('kategori', $product->kategori) }}" placeholder="">
                 <datalist id="kategori-list">
                     @foreach ($kategoris as $k) <option value="{{ $k }}"> @endforeach
                 </datalist>
@@ -41,6 +41,18 @@
                 <input id="foto" name="foto" type="file" accept="image/png,image/jpeg">
                 @if ($product->foto_url)
                     <div class="logo-prev"><img src="{{ $product->foto_url }}" alt="Foto saat ini"><span class="mu">Foto saat ini. Pilih file baru untuk menggantinya.</span></div>
+                @endif
+            </div>
+            <div class="full">
+                <label for="video">Video produk (MP4 atau WEBM, maks. 20 MB)</label>
+                <input id="video" name="video" type="file" accept="video/mp4,video/webm">
+                @if ($product->video_url)
+                    <div class="logo-prev">
+                        <video src="{{ $product->video_url }}" controls preload="metadata" style="max-width:260px;border-radius:8px"></video>
+                        <label style="margin:0;font-weight:500">
+                            <input type="checkbox" name="hapus_video" value="1" style="width:auto"> Hapus video
+                        </label>
+                    </div>
                 @endif
             </div>
         </div>
