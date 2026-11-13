@@ -15,6 +15,7 @@ class ProductController extends Controller
         $kategori = $request->query('kategori');
 
         $items = Product::query()
+            ->withSum(['orders as terjual' => fn ($o) => $o->where('status', '!=', 'Ditolak')], 'jumlah')
             ->when($q !== '', fn ($x) => $x->where('nama', 'like', "%{$q}%"))
             ->when($kategori, fn ($x) => $x->where('kategori', $kategori))
             ->orderBy('id')
@@ -25,6 +26,8 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        $product->loadSum(['orders as terjual' => fn ($o) => $o->where('status', '!=', 'Ditolak')], 'jumlah');
+
         return new ProductResource($product);
     }
 

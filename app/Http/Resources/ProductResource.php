@@ -17,6 +17,7 @@ class ProductResource extends JsonResource
             'harga'       => $this->harga,
             'stok'        => $this->stok,
             'foto_url'    => $this->foto_url,
+            'terjual' => (int) ($this->terjual ?? 0),
         ];
     }
 }
