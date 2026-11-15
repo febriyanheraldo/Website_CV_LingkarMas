@@ -16,15 +16,7 @@ class OrderController extends Controller
         $search = trim((string) $request->q);
 
         $items = Order::with('user')
-            ->when($status, fn ($q) => $q->where('status', $status))
-            ->when($search !== '', function ($q) use ($search) {
-                $q->where(function ($w) use ($search) {
-                    $w->whereHas('user', fn ($u) => $u->where('nama', 'like', "%{$search}%"));
-                    if (preg_match('/^(?:LM-?)?0*(\d+)$/i', $search, $m)) {
-                        $w->orWhere('id', (int) $m[1]);
-                    }
-                });
-            })
+            ->filterPesanan($status, $search)
             ->latest()
             ->paginate(10)
             ->withQueryString();

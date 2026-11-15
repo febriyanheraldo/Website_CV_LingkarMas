@@ -15,6 +15,10 @@
         @endforeach
     </select>
     <button class="btn sm" type="submit">Cari</button>
+    <a class="btn sm excel" href="{{ route('admin.laporan.pesanan.excel', request()->only(['q', 'status'])) }}">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13l4 5M13 13l-4 5"/></svg>
+    Export Excel
+</a>
 </form>
 
 <div class="panel">

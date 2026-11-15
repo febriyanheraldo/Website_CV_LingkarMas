@@ -44,4 +44,18 @@ class Order extends Model
     {
         return 'Rp ' . number_format($this->total, 0, ',', '.');
     }
+
+    public function scopeFilterPesanan($query, ?string $status, string $search = '')
+    {
+        return $query
+            ->when($status, fn ($q) => $q->where('status', $status))
+            ->when($search !== '', function ($q) use ($search) {
+                $q->where(function ($w) use ($search) {
+                    $w->whereHas('user', fn ($u) => $u->where('nama', 'like', "%{$search}%"));
+                    if (preg_match('/^(?:LM-?)?0*(\d+)$/i', $search, $m)) {
+                        $w->orWhere('id', (int) $m[1]);
+                    }
+                });
+            });
+    }
 }

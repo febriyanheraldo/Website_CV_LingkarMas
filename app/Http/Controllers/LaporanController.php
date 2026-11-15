@@ -7,6 +7,9 @@ use App\Models\Setting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\OrderStatus;
+use App\Exports\PesananExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
 {
@@ -42,6 +45,17 @@ class LaporanController extends Controller
         $nama = 'laporan-produk-' . date('Y-m-d') . '.pdf';
 
         return $request->boolean('unduh') ? $pdf->download($nama) : $pdf->stream($nama);
+    }
+
+    public function exportExcelPesanan(Request $request)
+    {
+        $status = OrderStatus::tryFrom((string) $request->status)?->value;
+        $q = trim((string) $request->q);
+
+        return Excel::download(
+            new PesananExport($status, $q),
+            'laporan-pesanan-' . date('Y-m-d') . '.xlsx'
+        );
     }
 
     private function logoDataUri(): ?string

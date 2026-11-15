@@ -39,4 +39,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::put('/pengaturan', [SettingController::class, 'update'])->name('settings.update');
 
     Route::get('/laporan/produk/pdf', [LaporanController::class, 'exportPdfProduk'])->name('laporan.produk.pdf');
+    Route::get('/laporan/pesanan/excel', [LaporanController::class, 'exportExcelPesanan'])->name('laporan.pesanan.excel');
 });
