@@ -7,6 +7,9 @@ use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Exports\PesananTemplateExport;
+use App\Imports\PesananImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -43,5 +46,40 @@ class OrderController extends Controller
         $service->changeStatus($order, OrderStatus::from($data['status']));
 
         return back()->with('ok', "Pesanan {$order->kode} berhasil diubah menjadi {$data['status']}.");
+    }
+
+    public function template()
+    {
+        return Excel::download(new PesananTemplateExport, 'template-import-pesanan.xlsx');
+    }
+
+    public function import(Request $request, OrderService $service)
+    {
+        // tolak file yang salah sebelum dibaca
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
+        ], [
+            'file.required' => 'File wajib dipilih.',
+            'file.file'     => 'Unggahan harus berupa file.',
+            'file.mimes'    => 'File harus berformat XLSX, XLS, atau CSV.',
+            'file.max'      => 'Ukuran file maksimal 2 MB.',
+        ]);
+
+        try {
+            $import = new PesananImport($service);
+            Excel::import($import, $request->file('file'));
+
+            $pesan = 'Import selesai: ' . $import->imported . ' pesanan ditambahkan.';
+            if ($import->skipped > 0) {
+                $pesan .= ' ' . $import->skipped . ' baris dilewati.';
+            }
+
+            return redirect()->route('admin.orders')
+                ->with('ok', $pesan)
+                ->with('import_log', array_slice($import->log, 0, 15));
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.orders')
+                ->withErrors(['file' => 'Import gagal: ' . $e->getMessage()]);
+        }
     }
 }

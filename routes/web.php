@@ -29,6 +29,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::delete('/produk/{product}', [ProductController::class, 'destroy'])->whereNumber('product')->name('products.destroy');
 
     Route::get('/pesanan', [OrderController::class, 'index'])->name('orders');
+    Route::get('/pesanan/template', [OrderController::class, 'template'])->name('orders.template');
+    Route::post('/pesanan/import', [OrderController::class, 'import'])->name('orders.import');
     Route::get('/pesanan/{order}', [OrderController::class, 'show'])->whereNumber('order')->name('orders.show');
     Route::patch('/pesanan/{order}/status', [OrderController::class, 'updateStatus'])->whereNumber('order')->name('orders.status');
 
