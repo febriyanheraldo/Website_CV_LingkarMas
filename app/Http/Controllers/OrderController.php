@@ -72,7 +72,13 @@ public function import(Request $request, OrderService $service)
 
         $pesan = 'Import selesai: '
             . $import->imported . ' pesanan ditambahkan, '
-            . $import->updated . ' pesanan diperbarui.';
+            . $import->updated . ' pesanan diperbarui';
+
+        if ($import->unchanged > 0) {
+            $pesan .= ', ' . $import->unchanged . ' pesanan tidak berubah';
+        }
+
+        $pesan .= '.';
 
         if ($import->skipped > 0) {
             $pesan .= ' ' . $import->skipped . ' baris dilewati.';

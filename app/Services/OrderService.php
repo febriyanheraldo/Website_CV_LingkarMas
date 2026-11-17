@@ -124,13 +124,17 @@ class OrderService
     }
 
 
+    /**
+     * Perbarui pesanan dari import Excel.
+     * Mengembalikan true jika data benar-benar berubah, false jika sama persis (tidak ada yang diubah).
+     */
     public function updateFromImport(
         Order $order,
         User $user,
         Product $product,
         int $jumlah,
         string $alamat
-    ): Order {
+    ): bool {
         return DB::transaction(function () use ($order, $user, $product, $jumlah, $alamat) {
             $lockedOrder = Order::query()
                 ->lockForUpdate()
@@ -150,6 +154,18 @@ class OrderService
                 throw ValidationException::withMessages([
                     'jumlah' => 'Jumlah pesanan minimal 1.',
                 ]);
+            }
+
+            $alamatBaru = mb_substr($alamat, 0, 500);
+
+            // Cek apakah ada perubahan data — jika sama persis, skip update stok & DB.
+            $tidakBerubah = $lockedOrder->user_id    === $user->id
+                && $lockedOrder->product_id  === $product->id
+                && $lockedOrder->jumlah      === $jumlah
+                && $lockedOrder->alamat      === $alamatBaru;
+
+            if ($tidakBerubah) {
+                return false; // tidak ada yang diubah
             }
 
             // Kunci produk lama dan baru agar perubahan stok aman.
@@ -196,15 +212,15 @@ class OrderService
             $newProduct->save();
 
             $lockedOrder->update([
-                'user_id' => $user->id, 
-                'product_id' => $newProduct->id,
+                'user_id'     => $user->id,
+                'product_id'  => $newProduct->id,
                 'produk_nama' => $newProduct->nama,
-                'jumlah' => $jumlah,
-                'alamat' => mb_substr($alamat, 0, 500),
-                'total' => $newProduct->harga * $jumlah,
+                'jumlah'      => $jumlah,
+                'alamat'      => $alamatBaru,
+                'total'       => $newProduct->harga * $jumlah,
             ]);
 
-            return $lockedOrder;
+            return true; // benar-benar diperbarui
         });
     }
 
