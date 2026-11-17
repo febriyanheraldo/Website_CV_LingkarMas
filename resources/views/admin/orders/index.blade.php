@@ -62,11 +62,15 @@
     <form method="POST" action="{{ route('admin.orders.import') }}" enctype="multipart/form-data">
         @csrf
         <h3>Import pesanan dari Excel</h3>
-        <ol>
-            <li>Unduh template, lalu hapus baris contohnya.</li>
-            <li>Isi kolom: Email Klien, Produk (nama persis), Jumlah, Alamat.</li>
-            <li>Unggah file di bawah ini. Status pesanan otomatis <b>Menunggu</b> dan stok dikurangi.</li>
-        </ol>
+        
+    <ol>
+    <li>Unduh template Excel, lalu hapus baris contoh sebelum mengisi data.</li>
+    <li>Isi kolom Kode Pesanan, Email Klien, Produk, Jumlah, dan Alamat.</li>
+    <li>Kosongkan Kode Pesanan untuk menambahkan pesanan baru.</li>
+    <li>Isi Kode Pesanan yang sesuai untuk memperbarui pesanan yang sudah ada.</li>
+    <li>Pesanan berstatus Menunggu atau Diproses dapat diperbarui. Pesanan berstatus Dikirim atau Ditolak tidak dapat diperbarui.</li>
+    <li>Status pesanan yang diperbarui tetap dipertahankan, sedangkan pesanan baru otomatis berstatus <b>Menunggu</b>.</li>
+    </ol>
 
         <label for="file">File (.xlsx, .xls, .csv, maks. 2 MB)</label>
         <input id="file" type="file" name="file" accept=".xlsx,.xls,.csv" required>

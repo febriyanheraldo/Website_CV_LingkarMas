@@ -53,33 +53,41 @@ class OrderController extends Controller
         return Excel::download(new PesananTemplateExport, 'template-import-pesanan.xlsx');
     }
 
-    public function import(Request $request, OrderService $service)
-    {
-        // tolak file yang salah sebelum dibaca
-        $request->validate([
-            'file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
-        ], [
-            'file.required' => 'File wajib dipilih.',
-            'file.file'     => 'Unggahan harus berupa file.',
-            'file.mimes'    => 'File harus berformat XLSX, XLS, atau CSV.',
-            'file.max'      => 'Ukuran file maksimal 2 MB.',
-        ]);
+    
+public function import(Request $request, OrderService $service)
+{
+    $request->validate([
+        'file' => 'required|file|mimes:xlsx,xls,csv|max:2048',
+    ], [
+        'file.required' => 'File wajib dipilih.',
+        'file.file' => 'Unggahan harus berupa file.',
+        'file.mimes' => 'File harus berformat XLSX, XLS, atau CSV.',
+        'file.max' => 'Ukuran file maksimal 2 MB.',
+    ]);
 
-        try {
-            $import = new PesananImport($service);
-            Excel::import($import, $request->file('file'));
+    try {
+        $import = new PesananImport($service);
 
-            $pesan = 'Import selesai: ' . $import->imported . ' pesanan ditambahkan.';
-            if ($import->skipped > 0) {
-                $pesan .= ' ' . $import->skipped . ' baris dilewati.';
-            }
+        Excel::import($import, $request->file('file'));
 
-            return redirect()->route('admin.orders')
-                ->with('ok', $pesan)
-                ->with('import_log', array_slice($import->log, 0, 15));
-        } catch (\Throwable $e) {
-            return redirect()->route('admin.orders')
-                ->withErrors(['file' => 'Import gagal: ' . $e->getMessage()]);
+        $pesan = 'Import selesai: '
+            . $import->imported . ' pesanan ditambahkan, '
+            . $import->updated . ' pesanan diperbarui.';
+
+        if ($import->skipped > 0) {
+            $pesan .= ' ' . $import->skipped . ' baris dilewati.';
         }
-    }
+
+        return redirect()->route('admin.orders')
+            ->with('ok', $pesan)
+            ->with('import_log', array_slice($import->log, 0, 15));
+
+    } catch (\Throwable $e) {
+        return redirect()->route('admin.orders')
+            ->withErrors([
+                'file' => 'Import gagal: ' . $e->getMessage(),
+            ]);
+   
+             }
+                      }
 }

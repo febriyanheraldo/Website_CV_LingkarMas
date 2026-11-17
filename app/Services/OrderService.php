@@ -122,4 +122,90 @@ class OrderService
             ]);
         }
     }
+
+
+    public function updateFromImport(
+        Order $order,
+        User $user,
+        Product $product,
+        int $jumlah,
+        string $alamat
+    ): Order {
+        return DB::transaction(function () use ($order, $user, $product, $jumlah, $alamat) {
+            $lockedOrder = Order::query()
+                ->lockForUpdate()
+                ->findOrFail($order->id);
+
+            // Pesanan yang sudah dikirim atau ditolak tidak boleh diubah.
+            if (! in_array($lockedOrder->status, [
+                OrderStatus::Menunggu,
+                OrderStatus::Diproses,
+            ], true)) {
+                throw ValidationException::withMessages([
+                    'kode' => 'Pesanan dengan status ' . $lockedOrder->status->value . ' tidak dapat diperbarui.',
+                ]);
+            }
+
+            if ($jumlah < 1) {
+                throw ValidationException::withMessages([
+                    'jumlah' => 'Jumlah pesanan minimal 1.',
+                ]);
+            }
+
+            // Kunci produk lama dan baru agar perubahan stok aman.
+            $productIds = array_unique(array_filter([
+                $lockedOrder->product_id,
+                $product->id,
+            ]));
+
+            $products = Product::query()
+                ->whereIn('id', $productIds)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            $oldProduct = $lockedOrder->product_id
+                ? $products->get($lockedOrder->product_id)
+                : null;
+
+            $newProduct = $products->get($product->id);
+
+            if (! $newProduct) {
+                throw ValidationException::withMessages([
+                    'produk' => 'Produk tidak ditemukan.',
+                ]);
+            }
+
+            // Kembalikan stok pesanan lama.
+            if ($oldProduct) {
+                $oldProduct->stok += $lockedOrder->jumlah;
+                $oldProduct->save();
+            }
+
+            // Perbarui stok berdasarkan produk dan jumlah baru.
+            $newProduct->refresh();
+
+            if ($newProduct->stok < $jumlah) {
+                throw ValidationException::withMessages([
+                    'jumlah' => 'Stok produk ' . $newProduct->nama . ' tidak mencukupi.',
+                ]);
+            }
+
+            $newProduct->stok -= $jumlah;
+            $newProduct->save();
+
+            $lockedOrder->update([
+                'user_id' => $user->id, 
+                'product_id' => $newProduct->id,
+                'produk_nama' => $newProduct->nama,
+                'jumlah' => $jumlah,
+                'alamat' => mb_substr($alamat, 0, 500),
+                'total' => $newProduct->harga * $jumlah,
+            ]);
+
+            return $lockedOrder;
+        });
+    }
+
 }
