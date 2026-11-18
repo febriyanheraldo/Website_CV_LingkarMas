@@ -75,6 +75,7 @@
     </div>
 </section>
 
+
 <section class="sec" id="unduh">
     <div class="wrap">
         <div class="dl">
@@ -85,10 +86,28 @@
             @else
                 <div class="phone"><b style="top:60px"></b><b style="top:114px"></b><b style="top:168px"></b></div>
             @endif
+
             <div>
                 <h2>Unduh Aplikasi Kami</h2>
                 <p>Akses katalog produk terlengkap, cek ketersediaan stok aktual, pantau status pesanan, dan lakukan transaksi langsung dari smartphone Anda.</p>
-                <a class="btn" href="#">Unduh APK Android</a>
+
+                <a class="btn"
+                   href="https://drive.google.com/file/d/1NAsq1zjSW4v1yW9yHAkQyUMQ51QyUR95/view?usp=sharing"
+                   target="_blank"
+                   rel="noopener">
+                    Unduh APK Android
+                </a>
+
+                <div style="margin-top:25px;">
+                    <h3>Scan QR Code untuk Download</h3>
+                    <p>Scan barcode berikut menggunakan kamera smartphone Anda.</p>
+
+                    <img
+                        src="{{ asset('images/barcode/qr-aplikasi.png') }}"
+                        alt="QR Code Download Aplikasi Lingkar Mas"
+                        style="width:180px; height:180px; object-fit:contain; background:white; padding:10px; border-radius:10px;"
+                        loading="lazy">
+                </div>
             </div>
         </div>
     </div>
