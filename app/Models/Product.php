@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Generator as QrCodeGenerator;
 
 class Product extends Model
 {
@@ -50,5 +51,44 @@ class Product extends Model
     public function getRingkasAttribute(): string
     {
         return Str::limit(str_replace("\n", ' · ', (string) $this->spesifikasi), 70);
+    }
+
+    // ─── Barcode / QR Code ───────────────────────────────────────────────────
+
+    /**
+     * Accessor: kode produk dari kolom id.
+     * Contoh: id = 3 → "PRD-00003"
+     */
+    public function getKodeProdukAttribute(): string
+    {
+        return 'PRD-' . str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Generate Barcode HTML (Code 39) menggunakan milon/barcode DNS1D.
+     * Sesuai panduan PPT PBL: output berupa elemen HTML murni tanpa perlu simpan file gambar / GD.
+     *
+     * @param  int  $width   Ketebalan garis (default 2 agar pas di layout panel)
+     * @param  int  $height  Tinggi barcode dalam pixel (default 70)
+     * @return string        HTML div inline
+     */
+    public function barcodeHtml(int $width = 2, int $height = 70): string
+    {
+        return \DNS1D::getBarcodeHTML($this->kode_produk, 'C39', $width, $height);
+    }
+
+    /**
+     * Generate QR Code (SVG inline) dari kode_produk.
+     *
+     * @param  int  $size    Ukuran dalam pixel (default 200)
+     * @return string        SVG markup
+     */
+    public function qrCodeSvg(int $size = 200): string
+    {
+        return (new QrCodeGenerator)
+            ->size($size)
+            ->errorCorrection('H')
+            ->margin(1)
+            ->generate($this->kode_produk);
     }
 }

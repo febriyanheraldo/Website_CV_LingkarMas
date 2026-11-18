@@ -24,9 +24,9 @@
                 <div class="err">{{ $errors->first() }}</div>
             @endif
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" value="{{ old('email', 'admin@lingkarmas.com') }}" autocomplete="username">
+            <input id="email" name="email" type="email" value="" autocomplete="username">
             <label for="password">Password</label>
-            <input id="password" name="password" type="password" value="Admin#12345" autocomplete="current-password">
+            <input id="password" name="password" type="password" value="">
             <button class="btn" type="submit">Masuk</button>
             <div style="margin-top:16px">
                 @include('partials.back', ['url' => route('home'), 'label' => 'Kembali ke beranda'])

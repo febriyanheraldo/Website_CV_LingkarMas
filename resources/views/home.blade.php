@@ -102,10 +102,16 @@
                     <h3>Scan QR Code untuk Download</h3>
                     <p>Scan barcode berikut menggunakan kamera smartphone Anda.</p>
 
+                    @php
+                        // Prioritaskan SVG (tidak butuh Imagick), fallback ke PNG
+                        $qrFile = file_exists(public_path('images/barcode/qr-aplikasi.svg'))
+                            ? asset('images/barcode/qr-aplikasi.svg')
+                            : asset('images/barcode/qr-aplikasi.png');
+                    @endphp
                     <img
-                        src="{{ asset('images/barcode/qr-aplikasi.png') }}"
+                        src="{{ $qrFile }}"
                         alt="QR Code Download Aplikasi Lingkar Mas"
-                        style="width:180px; height:180px; object-fit:contain; background:white; padding:10px; border-radius:10px;"
+                        style="width:180px; height:180px; object-fit:contain; background:white; padding:10px; border-radius:10px; border:1px solid #e5e7eb;"
                         loading="lazy">
                 </div>
             </div>

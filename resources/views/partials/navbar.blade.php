@@ -1,7 +1,7 @@
 <nav class="top">
     <div class="wrap">
         @include('partials.logo')
-        <div class="links">
+        <div class="links" id="pubLinks">
             <a href="{{ route('home') }}">Beranda</a>
             <a href="{{ route('home') }}#profil">Profil</a>
             <a href="{{ route('home') }}#katalog">Katalog Produk</a>
@@ -18,6 +18,14 @@
                 <a class="btn line sm" href="{{ route('login') }}">Login</a>
             @endauth
             <a class="btn sm" href="{{ route('home') }}#unduh">Unduh Aplikasi Android</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Buka menu navigasi" aria-expanded="false">☰</button>
         </div>
+    </div>
+    <!-- Mobile dropdown menu -->
+    <div class="mob-menu" id="mobMenu">
+        <a href="{{ route('home') }}">Beranda</a>
+        <a href="{{ route('home') }}#profil">Profil</a>
+        <a href="{{ route('home') }}#katalog">Katalog Produk</a>
+        <a href="#kontak">Kontak</a>
     </div>
 </nav>

@@ -12,5 +12,33 @@
     @include('partials.navbar')
     @yield('content')
     @include('partials.footer')
+    <script>
+    // Hamburger menu publik (mobile)
+    (function () {
+        var btn = document.getElementById('navToggle');
+        var menu = document.getElementById('mobMenu');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var open = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open);
+            btn.textContent = open ? '✕' : '☰';
+        });
+        document.addEventListener('click', function (e) {
+            if (!menu.contains(e.target) && e.target !== btn) {
+                menu.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.textContent = '☰';
+            }
+        });
+        // Tutup saat klik link
+        menu.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', function () {
+                menu.classList.remove('open');
+                btn.textContent = '☰';
+            });
+        });
+    })();
+    </script>
 </body>
 </html>

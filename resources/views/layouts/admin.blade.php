@@ -11,7 +11,8 @@
 <body>
 <div class="adm">
 
-    <aside class="side">
+    <aside class="side" id="adminSide">
+        <button class="side-toggle" id="sideToggle" aria-label="Buka menu" aria-expanded="false">☰</button>
         @include('partials.logo', ['dark' => true, 'text' => 'CV. Lingkar Mas'])
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'on' : '' }}">Dashboard</a>
         <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'on' : '' }}">Produk</a>
@@ -38,6 +39,26 @@
 </div>
 
 <script>
+    // Hamburger menu admin sidebar (mobile)
+    (function () {
+        var btn = document.getElementById('sideToggle');
+        var side = document.getElementById('adminSide');
+        if (!btn || !side) return;
+        btn.addEventListener('click', function () {
+            var open = side.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open);
+            btn.textContent = open ? '✕' : '☰';
+        });
+        // Tutup sidebar jika klik di luar
+        document.addEventListener('click', function (e) {
+            if (!side.contains(e.target) && side.classList.contains('open')) {
+                side.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.textContent = '☰';
+            }
+        });
+    })();
+
     // Tombol aksi hanya demo pada tahap frontend.
     document.querySelectorAll('[data-demo]').forEach(function (b) {
         b.addEventListener('click', function (e) {

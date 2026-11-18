@@ -48,6 +48,38 @@
                 @endforelse
             </dl>
         </div>
+
+        {{-- ═══ BARCODE PRODUK (Sesuai PPT: Code 39 dengan Milon Barcode) ═══ --}}
+        <div class="panel" style="padding:24px 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <h3 style="margin:0;">Barcode Produk</h3>
+                <button type="button" class="btn sm line" onclick="window.print()" style="cursor:pointer;">
+                    🖨️ Cetak Barcode
+                </button>
+            </div>
+            <p style="color:#6b7280; font-size:13px; margin-bottom:18px;">
+                Kode ID {{ $product->id }} dengan format Code 39 (C39)
+            </p>
+
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#fff; padding:24px 16px; border-radius:10px; border:1px solid #e5e7eb;">
+                {{-- Nama barang di atas barcode --}}
+                <div style="font-size:12px; font-weight:700; color:#6b7280; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;">
+                    {{ $product->nama }}
+                </div>
+
+                {{-- Barcode Code 39 di tengah (width=2, height=70 agar pas di panel) --}}
+                <div style="overflow-x:auto; max-width:100%; display:flex; justify-content:center; padding:4px 0;">
+                    {!! $product->barcodeHtml(2, 70) !!}
+                </div>
+
+                {{-- Kode PRD-0000X di bawah barcode --}}
+                <div style="margin-top:12px; font-family:monospace; font-size:16px; font-weight:700; letter-spacing:3px; color:#111827;">
+                    {{ $product->kode_produk }}
+                </div>
+            </div>
+        </div>
+        {{-- ═══ END BARCODE PRODUK ═══ --}}
+
     </div>
 </div>
 
@@ -55,7 +87,7 @@
         <div class="panel">
             <h3>Video produk</h3>
             <video class="pvideo" src="{{ $product->video_url }}" controls preload="metadata"></video>
-        </div>a
+        </div>
     @endif
 
 <div class="panel">
