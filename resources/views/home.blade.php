@@ -91,8 +91,13 @@
                 <h2>Unduh Aplikasi Kami</h2>
                 <p>Akses katalog produk terlengkap, cek ketersediaan stok aktual, pantau status pesanan, dan lakukan transaksi langsung dari smartphone Anda.</p>
 
+                @php
+                    $appDownloadUrl = 'https://drive.google.com/file/d/1NAsq1zjSW4v1yW9yHAkQyUMQ51QyUR95/view?usp=sharing';
+                    $qr = new \SimpleSoftwareIO\QrCode\Generator();
+                @endphp
+
                 <a class="btn"
-                   href="https://drive.google.com/file/d/1NAsq1zjSW4v1yW9yHAkQyUMQ51QyUR95/view?usp=sharing"
+                   href="{{ $appDownloadUrl }}"
                    target="_blank"
                    rel="noopener">
                     Unduh APK Android
@@ -102,17 +107,10 @@
                     <h3>Scan QR Code untuk Download</h3>
                     <p>Scan barcode berikut menggunakan kamera smartphone Anda.</p>
 
-                    @php
-                        // Prioritaskan SVG (tidak butuh Imagick), fallback ke PNG
-                        $qrFile = file_exists(public_path('images/barcode/qr-aplikasi.svg'))
-                            ? asset('images/barcode/qr-aplikasi.svg')
-                            : asset('images/barcode/qr-aplikasi.png');
-                    @endphp
-                    <img
-                        src="{{ $qrFile }}"
-                        alt="QR Code Download Aplikasi Lingkar Mas"
-                        style="width:180px; height:180px; object-fit:contain; background:white; padding:10px; border-radius:10px; border:1px solid #e5e7eb;"
-                        loading="lazy">
+                    {{-- QR Code digenerate secara real-time / dinamis (selalu sinkron dengan $appDownloadUrl) --}}
+                    <div style="display:inline-flex; align-items:center; justify-content:center; background:white; padding:10px; border-radius:10px; border:1px solid #e5e7eb;">
+                        {!! $qr->size(160)->errorCorrection('H')->margin(1)->generate($appDownloadUrl) !!}
+                    </div>
                 </div>
             </div>
         </div>
