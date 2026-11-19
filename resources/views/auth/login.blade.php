@@ -266,7 +266,7 @@
             </span>
             <h2 class="login-brand-title">Sistem Informasi &amp; Katalog Industri</h2>
             <p class="login-brand-desc">
-                Pusat kontrol terpadu CV. Lingkar Mas untuk memantau stok produk, menerbitkan barcode Code 39, dan mengelola transaksi klien secara aman dan real-time.
+                Pusat kontrol terpadu CV. Lingkar Mas untuk memantau stok produk, menerbitkan barcode Code 39, dan mengelola pesanan klien secara aman dan real-time.
             </p>
             <div class="login-features">
                 <div class="login-feature-item">
