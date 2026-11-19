@@ -79,14 +79,17 @@ th{text-align:left;color:var(--mu);font-weight:600;padding:8px;border-bottom:1px
 }
 .mob-menu{
   display:none;flex-direction:column;border-top:1px solid var(--bd);
-  background:#fff;padding:8px 20px 12px
+  background:#fff;padding:8px 20px 16px;box-shadow:0 10px 25px rgba(0,0,0,0.06);
 }
 .mob-menu a{
-  padding:10px 0;font-size:14px;font-weight:500;color:var(--mu);
+  padding:11px 0;font-size:14px;font-weight:500;color:var(--mu);
   border-bottom:1px solid var(--bd)
 }
 .mob-menu a:last-child{border-bottom:0}
 .mob-menu.open{display:flex}
+.mob-menu-actions{
+  display:flex;flex-direction:column;gap:8px;padding-top:14px;margin-top:4px;border-top:1px dashed var(--bd)
+}
 
 /* ---- side-toggle (admin sidebar hamburger) ---- */
 .side-toggle{display:none}
@@ -97,8 +100,10 @@ th{text-align:left;color:var(--mu);font-weight:600;padding:8px;border-bottom:1px
 @media(max-width:820px){
   /* ---- public nav ---- */
   .links{display:none}
-  .navbtn .line{display:none}
-  .navbtn{gap:8px}
+  .navbtn .line:not(.nav-login-btn):not(.nav-auth-btn){display:none}
+  .nav-login-btn, .nav-auth-btn{display:inline-flex !important; align-items:center; gap:6px; font-weight:600}
+  .navbtn .nav-dl-btn .dl-text{display:none}
+  .navbtn{display:flex; align-items:center; gap:8px}
   .nav-toggle{display:flex}
 
   /* ---- hero ---- */
@@ -159,6 +164,9 @@ th{text-align:left;color:var(--mu);font-weight:600;padding:8px;border-bottom:1px
   /* ---- public nav ---- */
   .wrap{padding:0 14px}
   nav.top .wrap{height:56px}
+  .nav-dl-btn{display:none !important}
+  .nav-login-btn{display:inline-flex !important; padding:6px 11px; font-size:12px; gap:5px}
+  .nav-auth-btn{display:inline-flex !important; padding:6px 10px; font-size:12px}
   .navbtn{gap:6px}
   .btn.sm{padding:6px 11px;font-size:12px}
 
