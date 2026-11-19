@@ -89,7 +89,7 @@
 
             <div>
                 <h2>Unduh Aplikasi Kami</h2>
-                <p>Akses katalog produk terlengkap, cek ketersediaan stok aktual, pantau status pesanan, dan lakukan transaksi langsung dari smartphone Anda.</p>
+                <p>Akses katalog produk terlengkap, cek ketersediaan stok aktual, dan pantau status pesanan dari smartphone Anda.</p>
 
                 @php
                     $appDownloadUrl = 'https://drive.google.com/file/d/1NAsq1zjSW4v1yW9yHAkQyUMQ51QyUR95/view?usp=sharing';

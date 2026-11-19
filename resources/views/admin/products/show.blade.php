@@ -64,7 +64,7 @@
             <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#fff; padding:24px 16px; border-radius:10px; border:1px solid #e5e7eb;">
                 {{-- Nama barang di atas barcode --}}
                 <div style="font-size:12px; font-weight:700; color:#6b7280; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;">
-                    {{ $product->nama }}
+                    {{ $product->nama }}    
                 </div>
 
                 {{-- Barcode Code 39 di tengah (width=2, height=70 agar pas di panel) --}}
