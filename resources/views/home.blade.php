@@ -109,7 +109,7 @@
 
                     {{-- QR Code digenerate secara real-time / dinamis (selalu sinkron dengan $appDownloadUrl) --}}
                     <div style="display:inline-flex; align-items:center; justify-content:center; background:white; padding:10px; border-radius:10px; border:1px solid #e5e7eb;">
-                        {!! $qr->size(160)->errorCorrection('H')->margin(1)->generate($appDownloadUrl) !!}
+                        {!! $qr->size(150)->errorCorrection('H')->margin(1)->generate($appDownloadUrl) !!}
                     </div>
                 </div>
             </div>

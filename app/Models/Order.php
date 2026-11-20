@@ -10,7 +10,7 @@ class Order extends Model
 {
     protected $fillable = [
         'user_id', 'product_id', 'produk_nama',
-        'jumlah', 'alamat', 'total', 'status',
+        'jumlah', 'alamat', 'total', 'status', 'stok_dialokasikan',
     ];
 
     protected $casts = [

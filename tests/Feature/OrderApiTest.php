@@ -32,17 +32,19 @@ class OrderApiTest extends TestCase
         return $order;
     }
 
-    public function test_stok_tidak_cukup(): void
+    public function test_preorder_bisa_dilakukan_meskipun_stok_nol(): void
     {
-        $p = $this->produk(2);
+        $p = $this->produk(0); // Stok 0 unit
         Sanctum::actingAs(User::factory()->create());
 
-        $this->postJson('/api/orders', ['product_id' => $p->id, 'jumlah' => 3, 'alamat' => 'Jl. A'])
-            ->assertStatus(422)
-            ->assertJson(['message' => 'Stok tidak cukup']);
+        $this->postJson('/api/orders', ['product_id' => $p->id, 'jumlah' => 3, 'alamat' => 'Jl. Proyek Pabrik'])
+            ->assertStatus(201)
+            ->assertJsonPath('status', 'Menunggu')
+            ->assertJsonPath('jumlah', 3)
+            ->assertJsonPath('produk_nama', 'Industrial Pump');
 
-        $this->assertSame(2, $p->fresh()->stok);
-        $this->assertDatabaseCount('orders', 0);
+        $this->assertSame(0, $p->fresh()->stok);
+        $this->assertDatabaseCount('orders', 1);
     }
 
     public function test_stok_berkurang_dan_total_dihitung_server(): void

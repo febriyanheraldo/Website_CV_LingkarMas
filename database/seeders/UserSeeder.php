@@ -10,28 +10,25 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'nama' => 'Admin Lingkar Mas',
-            'email' => 'admin@lingkarmas.com',
-            'hp' => '081200000000',
-            'password' => Hash::make('Admin#12345'),
-            'role' => 'admin',
-        ]);
+        // Data seeder hanya untuk akun contoh Klien (Customer):
+        User::firstOrCreate(
+            ['email' => 'budi@example.com'],
+            [
+                'nama' => 'Budi Santoso',
+                'hp' => '081311112222',
+                'password' => Hash::make('klien123'),
+                'role' => 'klien',
+            ]
+        );
 
-        User::create([
-            'nama' => 'Budi Santoso',
-            'email' => 'budi@example.com',
-            'hp' => '081311112222',
-            'password' => Hash::make('klien123'),
-            'role' => 'klien',
-        ]);
-
-        User::create([
-            'nama' => 'Siti Rahmawati',
-            'email' => 'siti@example.com',
-            'hp' => '081322223333',
-            'password' => Hash::make('klien123'),
-            'role' => 'klien',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'siti@example.com'],
+            [
+                'nama' => 'Siti Rahmawati',
+                'hp' => '081322223333',
+                'password' => Hash::make('klien123'),
+                'role' => 'klien',
+            ]
+        );
     }
 }

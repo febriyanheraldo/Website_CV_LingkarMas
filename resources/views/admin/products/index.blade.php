@@ -43,7 +43,7 @@
                     <td>{{ $p->stok }}</td>
                     <td class="row">
                         <a class="btn sm" href="{{ route('admin.products.show', $p) }}">Detail</a>
-                        <a class="btn sm line" href="{{ route('admin.products.edit', $p) }}">Ubah</a>
+                        <a class="btn sm line" href="{{ route('admin.products.edit', $p) }}">Edit</a>
                         <form class="inline" method="POST" action="{{ route('admin.products.destroy', $p) }}" onsubmit="return confirm('Hapus produk ini? Riwayat pesanan tetap tersimpan.')">
                             @csrf @method('DELETE')
                             <button class="btn sm line" type="submit">Hapus</button>

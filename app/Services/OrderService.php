@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
-    /** Membuat pesanan: validasi stok, kurangi stok, total dihitung server. */
+    /** Membuat pesanan (Pre-Order): klien tetap bisa pre-order meskipun stok 0. */
     public function create(User $user, int $productId, int $jumlah, string $alamat): Order
     {
         return DB::transaction(function () use ($user, $productId, $jumlah, $alamat) {
@@ -21,21 +21,26 @@ class OrderService
                 throw ValidationException::withMessages(['product_id' => ['Produk tidak ditemukan']]);
             }
 
-            if ($jumlah < 1 || $jumlah > $product->stok) {
-                throw ValidationException::withMessages(['jumlah' => ['Stok tidak cukup']]);
+            if ($jumlah < 1) {
+                throw ValidationException::withMessages(['jumlah' => ['Jumlah pre-order minimal 1 unit']]);
             }
 
+            $alokasi = max(0, min($product->stok, $jumlah));
+
             $order = Order::create([
-                'user_id'     => $user->id,
-                'product_id'  => $product->id,
-                'produk_nama' => $product->nama,
-                'jumlah'      => $jumlah,
-                'alamat'      => $alamat,
-                'total'       => $product->harga * $jumlah,   // jangan percaya total dari client
-                'status'      => OrderStatus::Menunggu,
+                'user_id'           => $user->id,
+                'product_id'        => $product->id,
+                'produk_nama'       => $product->nama,
+                'jumlah'            => $jumlah,
+                'stok_dialokasikan' => $alokasi,
+                'alamat'            => $alamat,
+                'total'             => $product->harga * $jumlah,
+                'status'            => OrderStatus::Menunggu,
             ]);
 
-            $product->decrement('stok', $jumlah);
+            if ($alokasi > 0) {
+                $product->decrement('stok', $alokasi);
+            }
 
             return $order;
         });
@@ -109,8 +114,8 @@ class OrderService
 
     private function kembalikanStok(Order $order): void
     {
-        if ($order->product_id) {
-            Product::whereKey($order->product_id)->increment('stok', $order->jumlah);
+        if ($order->product_id && $order->stok_dialokasikan > 0) {
+            Product::whereKey($order->product_id)->increment('stok', $order->stok_dialokasikan);
         }
     }
 
@@ -193,22 +198,14 @@ class OrderService
                 ]);
             }
 
-            // Kembalikan stok pesanan lama.
             if ($oldProduct) {
-                $oldProduct->stok += $lockedOrder->jumlah;
+                $oldProduct->stok += $lockedOrder->stok_dialokasikan;
                 $oldProduct->save();
             }
 
-            // Perbarui stok berdasarkan produk dan jumlah baru.
             $newProduct->refresh();
-
-            if ($newProduct->stok < $jumlah) {
-                throw ValidationException::withMessages([
-                    'jumlah' => 'Stok produk ' . $newProduct->nama . ' tidak mencukupi.',
-                ]);
-            }
-
-            $newProduct->stok -= $jumlah;
+            $alokasi = min($newProduct->stok, $jumlah);   // sisanya menunggu stok masuk
+            $newProduct->stok -= $alokasi;
             $newProduct->save();
 
             $lockedOrder->update([
@@ -218,6 +215,7 @@ class OrderService
                 'jumlah'      => $jumlah,
                 'alamat'      => $alamatBaru,
                 'total'       => $newProduct->harga * $jumlah,
+                'stok_dialokasikan' => $alokasi,
             ]);
 
             return true; // benar-benar diperbarui
