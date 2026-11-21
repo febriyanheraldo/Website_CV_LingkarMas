@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\StatistikController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
@@ -42,4 +43,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     Route::get('/laporan/produk/pdf', [LaporanController::class, 'exportPdfProduk'])->name('laporan.produk.pdf');
     Route::get('/laporan/pesanan/excel', [LaporanController::class, 'exportExcelPesanan'])->name('laporan.pesanan.excel');
+
+    Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik');
 });

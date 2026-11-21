@@ -5,7 +5,7 @@
 <!-- Welcome Banner Header -->
 <div style="background: linear-gradient(135deg, #0b2239 0%, #173d63 100%); color:#fff; border-radius:18px; padding:28px 24px; margin-bottom:24px; position:relative; overflow:hidden; box-shadow: 0 10px 25px rgba(11,34,57,0.12);">
     <div style="position:absolute; right:-30px; top:-30px; width:180px; height:180px; border-radius:50%; background:radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 70%); pointer-events:none;"></div>
-    
+
     <div style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
         <div>
             <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.12); padding:4px 12px; border-radius:99px; font-size:12px; font-weight:600; color:#fdba74; margin-bottom:10px;">
@@ -33,7 +33,7 @@
 
 <!-- Stat Cards (Modern Dashboard Cards) -->
 <div class="stats" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:24px;">
-    
+
     <!-- Card 1: Menunggu -->
     <a href="{{ route('admin.orders') }}" style="display:block; text-decoration:none; color:inherit;">
         <div class="stat-card" style="background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:20px; position:relative; overflow:hidden; transition:all 0.25s ease; box-shadow:0 4px 12px rgba(0,0,0,0.03); border-top:4px solid #f59e0b;">
@@ -111,9 +111,59 @@
     </a>
 </div>
 
+<!-- Grafik statistik -->
+<div class="chart-grid">
+    <div class="panel chart-panel">
+        <div class="chart-head">
+            <div>
+                <h3>Tren Pesanan</h3>
+                <p class="sub">6 bulan terakhir</p>
+            </div>
+            <a class="chart-link" href="{{ route('admin.statistik') }}">Statistik lengkap &rarr;</a>
+        </div>
+        @if (array_sum($trenPesanan['masuk']) > 0)
+            <div class="chart-box"><canvas id="chartTrenPesanan"></canvas></div>
+        @else
+            <p class="chart-empty">Belum ada pesanan dalam 6 bulan terakhir.</p>
+        @endif
+    </div>
+
+    <div class="panel chart-panel">
+        <h3>Status Pesanan</h3>
+        <p class="sub">Komposisi seluruh pesanan</p>
+        @if (array_sum($statusPesanan['data']) > 0)
+            <div class="chart-box"><canvas id="chartStatusPesanan"></canvas></div>
+        @else
+            <p class="chart-empty">Belum ada pesanan.</p>
+        @endif
+    </div>
+</div>
+
+<div class="chart-grid eq">
+    <div class="panel chart-panel">
+        <h3>Stok per Kategori</h3>
+        <p class="sub">Total unit tersedia</p>
+        @if (count($stokKategori['labels']) > 0)
+            <div class="chart-box"><canvas id="chartStokKategori"></canvas></div>
+        @else
+            <p class="chart-empty">Belum ada produk.</p>
+        @endif
+    </div>
+
+    <div class="panel chart-panel">
+        <h3>Produk Terlaris</h3>
+        <p class="sub">5 teratas berdasarkan unit dipesan</p>
+        @if (count($produkTerlaris['labels']) > 0)
+            <div class="chart-box"><canvas id="chartProdukTerlaris"></canvas></div>
+        @else
+            <p class="chart-empty">Belum ada pesanan.</p>
+        @endif
+    </div>
+</div>
+
 <!-- Two Columns Layout: Pesanan Terbaru & Stok Menipis -->
 <div class="two" style="gap:20px;">
-    
+
     <!-- Kolom Kiri: Pesanan Terbaru -->
     <div class="panel" style="border-radius:16px; padding:22px; box-shadow:0 4px 14px rgba(0,0,0,0.03); border:1px solid #e2e8f0; margin-bottom:0;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
@@ -205,7 +255,7 @@
                 </li>
             @endforelse
         </ul>
-        
+
         <div style="margin-top:16px; text-align:center;">
             <a href="{{ route('admin.products') }}" class="btn sm line" style="width:100%; justify-content:center; font-size:13px;">
                 Lihat Semua Katalog Produk
@@ -220,4 +270,91 @@
         box-shadow: 0 12px 24px rgba(11,34,57,0.08) !important;
     }
 </style>
+@endsection
+@section('scripts')
+    @include('partials.chart-scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof renderChart === 'undefined') return;
+
+            const tren = @json($trenPesanan, JSON_HEX_TAG | JSON_HEX_APOS);
+            const status = @json($statusPesanan, JSON_HEX_TAG | JSON_HEX_APOS);
+            const stok = @json($stokKategori, JSON_HEX_TAG | JSON_HEX_APOS);
+            const terlaris = @json($produkTerlaris, JSON_HEX_TAG | JSON_HEX_APOS);
+            const ada = function (id) { return document.getElementById(id) !== null; };
+
+            // 1. Tren pesanan: line dengan gradien, dua dataset
+            if (ada('chartTrenPesanan')) {
+                const kanvas = document.getElementById('chartTrenPesanan');
+                renderChart('chartTrenPesanan', {
+                    type: 'line',
+                    data: {
+                        labels: tren.labels,
+                        datasets: [
+                            {
+                                label: 'Pesanan masuk',
+                                data: tren.masuk,
+                                borderColor: palette.primary,
+                                backgroundColor: chartGradient(kanvas, 'rgba(11,34,57,.28)', 'rgba(11,34,57,0)'),
+                                fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3,
+                            },
+                            {
+                                label: 'Dikirim',
+                                data: tren.dikirim,
+                                borderColor: palette.success,
+                                backgroundColor: chartGradient(kanvas, 'rgba(22,163,74,.25)', 'rgba(22,163,74,0)'),
+                                fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 3,
+                            },
+                        ],
+                    },
+                    options: chartOptions(),
+                });
+            }
+
+            // 2. Status pesanan: doughnut, warna dari server
+            if (ada('chartStatusPesanan')) {
+                renderChart('chartStatusPesanan', {
+                    type: 'doughnut',
+                    data: {
+                        labels: status.labels,
+                        datasets: [{ data: status.data, backgroundColor: status.colors, borderWidth: 0, hoverOffset: 6 }],
+                    },
+                    options: chartOptions({ scales: false, cutout: '62%', plugins: { legend: { position: 'bottom', align: 'center' } } }),
+                });
+            }
+
+            // 3. Stok per kategori: bar vertikal, tooltip memuat jumlah jenis produk
+            if (ada('chartStokKategori')) {
+                renderChart('chartStokKategori', {
+                    type: 'bar',
+                    data: {
+                        labels: stok.labels,
+                        datasets: [{ label: 'Total stok (unit)', data: stok.data, backgroundColor: stok.colors, borderRadius: 8, maxBarThickness: 46 }],
+                    },
+                    options: chartOptions({
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { afterLabel: function (c) { return stok.item[c.dataIndex] + ' jenis produk'; } } },
+                        },
+                    }),
+                });
+            }
+
+            // 4. Produk terlaris: bar horizontal
+            if (ada('chartProdukTerlaris')) {
+                renderChart('chartProdukTerlaris', {
+                    type: 'bar',
+                    data: {
+                        labels: terlaris.labels,
+                        datasets: [{ label: 'Unit dipesan', data: terlaris.data, backgroundColor: palette.accent, borderRadius: 6, maxBarThickness: 26 }],
+                    },
+                    options: chartOptions({
+                        indexAxis: 'y',
+                        plugins: { legend: { display: false } },
+                        scales: { x: { beginAtZero: true, grid: { display: true, color: palette.grid } }, y: { grid: { display: false } } },
+                    }),
+                });
+            }
+        });
+    </script>
 @endsection

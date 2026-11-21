@@ -6,10 +6,11 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Services\StatistikService;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(StatistikService $statistik)
     {
         $counts = DB::table('orders')->selectRaw('status, COUNT(*) as n')->groupBy('status')->pluck('n', 'status');
 
@@ -22,6 +23,11 @@ class AdminController extends Controller
             ],
             'recent' => Order::with('user')->latest()->take(5)->get(),
             'low' => Product::where('stok', '<=', 5)->orderBy('stok')->get(),
+
+            'trenPesanan'    => $statistik->pesananPerBulan(6),
+            'statusPesanan'  => $statistik->statusPesanan(),
+            'stokKategori'   => $statistik->stokPerKategori(6),
+            'produkTerlaris' => $statistik->produkTerlaris(5),
         ]);
     }
 

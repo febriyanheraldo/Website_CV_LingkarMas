@@ -15,6 +15,7 @@
         <button class="side-toggle" id="sideToggle" aria-label="Buka menu" aria-expanded="false">☰</button>
         @include('partials.logo', ['dark' => true, 'text' => 'CV. Lingkar Mas'])
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'on' : '' }}">Dashboard</a>
+        <a href="{{ route('admin.statistik') }}" class="{{ request()->routeIs('admin.statistik') ? 'on' : '' }}">Statistik</a>
         <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'on' : '' }}">Produk</a>
         <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'on' : '' }}">Pesanan</a>
         <a href="{{ route('admin.clients') }}" class="{{ request()->routeIs('admin.clients*') ? 'on' : '' }}">Klien</a>
@@ -67,5 +68,6 @@
         });
     });
 </script>
+@yield('scripts')
 </body>
 </html>
