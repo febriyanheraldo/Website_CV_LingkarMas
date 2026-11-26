@@ -10,7 +10,7 @@
 </head>
 <body>
     @include('partials.navbar')
-    @yield('content')
+    @yield('content')       
     @include('partials.footer')
     <script>
     // Hamburger menu publik (mobile)

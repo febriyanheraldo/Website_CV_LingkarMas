@@ -68,7 +68,7 @@ class ProductController extends Controller
             $filename = time() . '_' . $nama . '.' . $file->extension();
 
             $file->storeAs('produk', $filename, 'public');   // storage/app/public/produk/
-            $data['foto'] = 'storage/produk/' . $filename;   // path yang disimpan ke DB
+            $data['foto'] = 'produk/' . $filename;   // path yang disimpan ke DB
         }
 
         if ($request->hasFile('video')) {
@@ -131,7 +131,7 @@ class ProductController extends Controller
             $filename = time() . '_' . $nama . '.' . $file->extension();
 
             $file->storeAs('produk', $filename, 'public');
-            $data['foto'] = 'storage/produk/' . $filename;
+            $data['foto'] = 'produk/' . $filename;
         }
 
         if ($request->hasFile('video')) {
@@ -165,7 +165,8 @@ class ProductController extends Controller
     private function deleteFoto(Product $product): void
     {
         if ($product->foto && ! str_starts_with($product->foto, 'images/')) {
-            Storage::disk('public')->delete($product->foto);
+            $cleanPath = str_replace('storage/', '', $product->foto);
+            Storage::disk('public')->delete($cleanPath);
         }
     }
 

@@ -2,22 +2,38 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <link rel="icon" href="{{ asset('images/logo/logo_lingkarmas.png') }}">
     <title>Login Admin | CV. Lingkar Mas</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700&family=Inter:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            color: #0f1b2a;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
         .login-wrap {
             min-height: 100vh;
+            min-height: 100dvh;
             display: grid;
             grid-template-columns: 1.1fr 1fr;
             background: #f8fafc;
+            width: 100%;
         }
         .login-brand-panel {
             background: linear-gradient(145deg, #0b2239 0%, #133a61 100%);
             color: #fff;
-            padding: 60px;
+            padding: clamp(32px, 5vw, 60px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -46,10 +62,15 @@
             background: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
             pointer-events: none;
         }
+        .login-brand-top {
+            position: relative;
+            z-index: 2;
+        }
         .login-brand-content {
             position: relative;
             z-index: 2;
             margin: auto 0;
+            padding: 24px 0;
         }
         .login-badge {
             display: inline-flex;
@@ -63,18 +84,19 @@
             font-weight: 600;
             color: #fdba74;
             margin-bottom: 20px;
+            backdrop-filter: blur(4px);
         }
         .login-brand-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 38px;
+            font-size: clamp(26px, 3vw, 38px);
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 1.25;
             margin-bottom: 16px;
             color: #ffffff;
         }
         .login-brand-desc {
             color: #cbd5e1;
-            font-size: 15px;
+            font-size: clamp(13px, 1.15vw, 15px);
             line-height: 1.6;
             max-width: 44ch;
             margin-bottom: 32px;
@@ -101,32 +123,47 @@
             font-size: 15px;
             flex-shrink: 0;
         }
+        .login-brand-footer {
+            position: relative;
+            z-index: 2;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
         .login-form-panel {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 32px 24px;
+            padding: clamp(20px, 4vw, 40px);
             background: #f8fafc;
+            min-height: 100%;
+            width: 100%;
         }
         .login-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 20px;
-            padding: 40px 36px;
+            padding: clamp(26px, 4vw, 40px) clamp(20px, 4vw, 36px);
             box-shadow: 0 10px 30px rgba(11, 34, 57, 0.06);
         }
         .login-mobile-logo {
             display: none;
             margin-bottom: 24px;
-            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-mobile-logo .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
         .login-card-header {
             margin-bottom: 24px;
         }
         .login-card-header h1 {
-            font-size: 26px;
+            font-size: clamp(22px, 2.5vw, 26px);
             font-weight: 700;
             color: #0b2239;
             margin-bottom: 6px;
@@ -134,6 +171,41 @@
         .login-card-header p {
             color: #64748b;
             font-size: 14px;
+            line-height: 1.5;
+        }
+        .err {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
+        }
+        .err svg {
+            flex-shrink: 0;
+            color: #ef4444;
+        }
+        .ok {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
+        }
+        .ok svg {
+            flex-shrink: 0;
+            color: #22c55e;
         }
         .input-group {
             margin-bottom: 18px;
@@ -147,15 +219,23 @@
         }
         .input-wrap {
             position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
         .input-wrap input {
             width: 100%;
-            padding: 12px 14px 12px 40px;
+            padding: 12px 14px 12px 42px;
             border: 1px solid #cbd5e1;
             border-radius: 10px;
             font-size: 14px;
+            font-family: inherit;
             transition: all 0.2s;
-            background: #fff;
+            background: #ffffff;
+            color: #0f1b2a;
+        }
+        .input-wrap.has-toggle input {
+            padding-right: 44px;
         }
         .input-wrap input:focus {
             border-color: #f97316;
@@ -171,10 +251,37 @@
             display: flex;
             align-items: center;
             pointer-events: none;
+            z-index: 1;
+        }
+        .btn-toggle-password {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            color: #94a3b8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, background-color 0.2s;
+            z-index: 2;
+        }
+        .btn-toggle-password:hover {
+            color: #334155;
+            background: #f1f5f9;
+        }
+        .btn-toggle-password:focus-visible {
+            outline: 2px solid #f97316;
+            outline-offset: 2px;
         }
         .btn-login-submit {
             width: 100%;
-            padding: 13px;
+            min-height: 46px;
+            padding: 13px 20px;
             border-radius: 10px;
             background: #f97316;
             color: #ffffff;
@@ -187,7 +294,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
             box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
         }
         .btn-login-submit:hover {
@@ -197,6 +304,10 @@
         }
         .btn-login-submit:active {
             transform: translateY(0);
+        }
+        .btn-login-submit:focus-visible {
+            outline: 2px solid #ea580c;
+            outline-offset: 2px;
         }
         .login-back-link {
             margin-top: 22px;
@@ -218,7 +329,7 @@
         }
 
         /* RESPONSIVE BREAKPOINT */
-        @media (max-width: 900px) {
+        @media (max-width: 960px) {
             .login-wrap {
                 grid-template-columns: 1fr;
             }
@@ -227,27 +338,51 @@
             }
             .login-mobile-logo {
                 display: flex;
-                justify-content: center;
             }
             .login-form-panel {
                 padding: 40px 20px;
+                min-height: 100vh;
+                min-height: 100dvh;
             }
-            .login-card {
-                padding: 32px 24px;
-                border-radius: 16px;
+        }
+        @media (max-width: 768px) {
+            /* Mencegah auto-zoom Safari iOS pada field input */
+            .input-wrap input {
+                font-size: 16px;
             }
         }
         @media (max-width: 480px) {
             .login-form-panel {
-                padding: 24px 16px;
+                padding: 24px 14px;
             }
             .login-card {
-                padding: 26px 18px;
-                box-shadow: none;
-                border: 1px solid #e2e8f0;
+                padding: 24px 18px;
+                border-radius: 16px;
+                box-shadow: 0 4px 16px rgba(11, 34, 57, 0.05);
+            }
+            .login-card-header {
+                margin-bottom: 20px;
             }
             .login-card-header h1 {
-                font-size: 22px;
+                font-size: 21px;
+            }
+            .login-card-header p {
+                font-size: 13px;
+            }
+            .btn-login-submit {
+                min-height: 48px;
+                font-size: 14.5px;
+            }
+        }
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 20px 14px;
+            }
+            .input-wrap input {
+                padding-left: 38px;
+            }
+            .input-icon {
+                left: 12px;
             }
         }
     </style>
@@ -256,7 +391,7 @@
 <div class="login-wrap">
     <!-- Panel Kiri: Brand & Informasi (Desktop) -->
     <div class="login-brand-panel">
-        <div>
+        <div class="login-brand-top">
             @include('partials.logo', ['dark' => true])
         </div>
         <div class="login-brand-content">
@@ -283,7 +418,7 @@
                 </div>
             </div>
         </div>
-        <div style="font-size: 13px; color: #94a3b8;">
+        <div class="login-brand-footer">
             &copy; {{ date('Y') }} CV. Lingkar Mas Sidoarjo. All rights reserved.
         </div>
     </div>
@@ -301,8 +436,15 @@
                 <p>Silakan masukkan kredensial akun administrator Anda.</p>
             </div>
 
+            @if (session('status'))
+                <div class="ok">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>{{ session('status') }}</span>
+                </div>
+            @endif
+
             @if (isset($errors) && $errors->any())
-                <div class="err" style="margin-bottom: 20px; display:flex; align-items:center; gap:8px;">
+                <div class="err">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     <span>{{ $errors->first() }}</span>
                 </div>
@@ -313,20 +455,34 @@
                 <div class="input-group">
                     <label for="email">Alamat Email</label>
                     <div class="input-wrap">
-                        <span class="input-icon">
+                        <span class="input-icon" aria-hidden="true">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                         </span>
-                        <input id="email" name="email" type="email" autofocus>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus autocomplete="email" placeholder="nama@email.com">
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label for="password">Kata Sandi</label>
-                    <div class="input-wrap">
-                        <span class="input-icon">
+                    <div class="input-wrap has-toggle">
+                        <span class="input-icon" aria-hidden="true">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         </span>
-                        <input id="password" name="password" type="password">
+                        <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••">
+                        <button type="button" class="btn-toggle-password" id="togglePassword" aria-label="Lihat kata sandi" title="Lihat kata sandi">
+                            <!-- Ikon mata terbuka (saat password tertutup/hidden) -->
+                            <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <!-- Ikon mata dicoret (saat password terbuka/visible) -->
+                            <svg class="eye-off-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none;">
+                                <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                                <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+                                <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+                                <line x1="2" x2="22" y1="2" y2="22"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -345,5 +501,36 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggleBtn = document.getElementById('togglePassword');
+        var passwordInput = document.getElementById('password');
+
+        if (toggleBtn && passwordInput) {
+            var eyeIcon = toggleBtn.querySelector('.eye-icon');
+            var eyeOffIcon = toggleBtn.querySelector('.eye-off-icon');
+
+            toggleBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var isPassword = passwordInput.getAttribute('type') === 'password';
+
+                if (isPassword) {
+                    passwordInput.setAttribute('type', 'text');
+                    if (eyeIcon) eyeIcon.style.display = 'none';
+                    if (eyeOffIcon) eyeOffIcon.style.display = 'block';
+                    toggleBtn.setAttribute('aria-label', 'Sembunyikan kata sandi');
+                    toggleBtn.setAttribute('title', 'Sembunyikan kata sandi');
+                } else {
+                    passwordInput.setAttribute('type', 'password');
+                    if (eyeIcon) eyeIcon.style.display = 'block';
+                    if (eyeOffIcon) eyeOffIcon.style.display = 'none';
+                    toggleBtn.setAttribute('aria-label', 'Lihat kata sandi');
+                    toggleBtn.setAttribute('title', 'Lihat kata sandi');
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

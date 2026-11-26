@@ -22,10 +22,17 @@ class Product extends Model
     /** URL absolut foto (dipakai web & API). Null jika tidak ada atau file hilang. */
     public function getFotoUrlAttribute(): ?string
     {
-        if (! $this->foto || ! file_exists(public_path($this->foto))) {
+        if (! $this->foto) {
             return null;
         }
 
+        // Jika foto hasil upload (diawali 'storage/'), cek lewat Storage disk public
+        if (str_starts_with($this->foto, 'storage/')) {
+            $relativePath = Str::after($this->foto, 'storage/');
+            return Storage::disk('public')->exists($relativePath) ? asset($this->foto) : null;
+        }
+
+        // Jika foto bawaan (diawali 'images/')
         return asset($this->foto);
     }
 
