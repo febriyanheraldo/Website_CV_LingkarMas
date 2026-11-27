@@ -46,7 +46,7 @@
         <div class="grid3">
             <div class="card"><div class="ic">📊</div><h3>Stok Real-time</h3><p>Ketersediaan produk selalu langsung melalui aplikasi kami, sehingga rencana pembelian Anda lebih pasti.</p></div>
             <div class="card"><div class="ic">🛡</div><h3>Produk Original &amp; Garansi</h3><p>Semua komponen industri kami bersumber dari distributor resmi dan dilengkapi garansi produk.</p></div>
-            <div class="card"><div class="ic">🚚</div><h3>Pengiriman Cepat</h3><p>Layanan logistik terintegrasi menjangkau pengiriman ke seluruh wilayah Jawa Timur.</p></div>
+            <div class="card"><div class="ic">📦</div><h3>Fitur Pre-order</h3><p>Pesan komponen atau unit industri yang sedang kosong secara mudah agar kebutuhan proyek Anda tetap terjadwal.</p></div>
         </div>
     </div>
 </section>

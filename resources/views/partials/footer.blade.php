@@ -3,7 +3,7 @@
         <div class="ftg">
             <div>
                 @include('partials.logo', ['dark' => true])
-                <p>Jl. Raya Waru No. 123, Waru, Sidoarjo, Jawa Timur 61256<br>
+                <p>Perumahan Makarya Binangun, Blok A, Jalan Dewi Sartika Barat II Block A32, Mekar Raya Binangun, Janti, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256<br>
                 Telp: {{ \App\Models\Setting::get('telepon', '-') }}<br>
                 Email: {{ \App\Models\Setting::get('email', '-') }}</p>
             </div>
