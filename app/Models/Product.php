@@ -26,23 +26,30 @@ class Product extends Model
             return null;
         }
 
-        // Jika foto hasil upload (diawali 'storage/'), cek lewat Storage disk public
-        if (str_starts_with($this->foto, 'storage/')) {
-            $relativePath = Str::after($this->foto, 'storage/');
-            return Storage::disk('public')->exists($relativePath) ? asset($this->foto) : null;
+        // Jika foto bawaan statis (misal 'images/pompa.jpg')
+        if (str_starts_with($this->foto, 'images/')) {
+            return asset($this->foto);
         }
 
-        // Jika foto bawaan (diawali 'images/')
-        return asset($this->foto);
+        // Pastikan path relatif ke storage/app/public bersih dari awalan 'storage/'
+        $relativePath = Str::after($this->foto, 'storage/');
+
+        return Storage::disk('public')->exists($relativePath)
+            ? asset('storage/' . $relativePath)
+            : null;
     }
 
     public function getVideoUrlAttribute(): ?string
     {
-        if (! $this->video || ! file_exists(public_path($this->video))) {
+        if (! $this->video) {
             return null;
         }
 
-        return asset($this->video);
+        $relativePath = Str::after($this->video, 'storage/');
+
+        return Storage::disk('public')->exists($relativePath)
+            ? asset('storage/' . $relativePath)
+            : null;
     }
 
     public function getIkonAttribute(): string
