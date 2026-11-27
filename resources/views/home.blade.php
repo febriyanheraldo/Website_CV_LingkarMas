@@ -92,7 +92,7 @@
                 <p>Akses katalog produk terlengkap, cek ketersediaan stok aktual, dan pantau status pesanan dari smartphone Anda.</p>
 
                 @php
-                    $appDownloadUrl = 'https://drive.google.com/file/d/1NAsq1zjSW4v1yW9yHAkQyUMQ51QyUR95/view?usp=sharing';
+                    $appDownloadUrl = 'https://drive.google.com/file/d/1UL3Xz7tR2WzZ4VfM-TUNW3ccDi28-RaP/view?usp=drivesdk';
                     $qr = new \SimpleSoftwareIO\QrCode\Generator();
                 @endphp
 
